@@ -54,8 +54,9 @@ class ColumnInfos : public std::vector<ColumnInfo> {
   void updateSizes(const Rows& rows) { updateSizes(rows, defaultWidth); }
 };
 
-std::ostream& Row::output(std::ostream& os, const ColumnInfos& columnInfos,
-                          Align defaultAlign) const {
+inline std::ostream& Row::output(std::ostream& os,
+                                 const ColumnInfos& columnInfos,
+                                 Align defaultAlign) const {
   auto s = size();
   if (!s) return os;
   auto outputCell = [&](const size_t& i) -> auto& {
@@ -65,7 +66,7 @@ std::ostream& Row::output(std::ostream& os, const ColumnInfos& columnInfos,
     if (i < s)
       if (auto& p = operator[](i); p != nullptr)
         p->output(os, columnInfos[i].size, a);
-        
+
     return os << columnInfos.suffix;
   };
   size_t i = 0;
@@ -73,8 +74,9 @@ std::ostream& Row::output(std::ostream& os, const ColumnInfos& columnInfos,
   return outputCell(i);
 }
 
-std::ostream& Rows::output(std::ostream& os, const ColumnInfos& columnInfos,
-                           Align defaultAlign) const {
+inline std::ostream& Rows::output(std::ostream& os,
+                                  const ColumnInfos& columnInfos,
+                                  Align defaultAlign) const {
   if (!size()) return os;
   auto i = begin(), e = --end();
   while (i != e)
