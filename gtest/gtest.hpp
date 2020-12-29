@@ -6,6 +6,21 @@
 
 #include "Table.hpp"
 
+template <class>
+struct sfinae_true : std::true_type {};
+template <class T>
+static auto test_insertion(int)
+    -> sfinae_true<decltype(std::cout << std::declval<T>())>;
+template <class T>
+static auto test_insertion(long) -> std::false_type;
+template <class T>
+struct is_printable : decltype(test_insertion<T>(0)) {};
+
+template <typename = std::enable_if_t<!is_printable<char32_t>::value>>
+inline std::ostream& operator<<(std::ostream& os, const char32_t c) {
+  return os << (uint32_t)c;
+}
+
 template <typename T1, typename T2>
 inline testing::AssertionResult uvwee_gtest_test_vec(const T1& v1, const T2& v2,
                                                      const char* n1,
